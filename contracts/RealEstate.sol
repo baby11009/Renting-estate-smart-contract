@@ -3,54 +3,73 @@ pragma solidity ^0.8.20;
 
 /// @title Real Estate Smart Contract - Track Property Details and Renting with Deposits and Late Fees
 contract RealEstate {
-    uint public propertyCount = 0;
-    uint public lateFeePercentage = 5; // Late fee is 5% of rent price
+    uint256 public propertyCount = 0;
 
-    enum Status { Available, Rented }
+    enum Status {
+        Available,
+        Rented
+    }
 
     struct Property {
-        uint id;
+        uint256 id;
         string name;
         string location;
         address payable owner;
         address renter;
-        uint rentPrice;
-        uint deposit;
-        uint lastPaid;
+        uint256 rentPrice;
+        uint256 deposit;
+        uint256 lastPaid;
         Status status;
     }
 
-    mapping(uint => Property) public properties;
+    mapping(uint256 => Property) public properties;
 
     // --- MODIFIERS ---
-    modifier onlyOwner(uint _propertyId) {
-        require(msg.sender == properties[_propertyId].owner, "Not property owner");
+    modifier onlyOwner(uint256 _propertyId) {
+        require(
+            msg.sender == properties[_propertyId].owner,
+            "Not property owner"
+        );
         _;
     }
 
-    modifier onlyRenter(uint _propertyId) {
-        require(msg.sender == properties[_propertyId].renter, "Not renter of this property");
+    modifier onlyRenter(uint256 _propertyId) {
+        require(
+            msg.sender == properties[_propertyId].renter,
+            "Not renter of this property"
+        );
         _;
     }
 
-    modifier onlyWhenRented(uint _propertyId) {
-        require(properties[_propertyId].status == Status.Rented, "Property is not rented");
+    modifier onlyWhenRented(uint256 _propertyId) {
+        require(
+            properties[_propertyId].status == Status.Rented,
+            "Property is not rented"
+        );
         _;
     }
 
-    modifier onlyWhenAvailable(uint _propertyId) {
-        require(properties[_propertyId].status == Status.Available, "Property is not available");
+    modifier onlyWhenAvailable(uint256 _propertyId) {
+        require(
+            properties[_propertyId].status == Status.Available,
+            "Property is not available"
+        );
         _;
     }
 
-    modifier renterHasPaid(uint _propertyId) {
+    modifier renterHasPaid(uint256 _propertyId) {
         Property storage prop = properties[_propertyId];
         require(prop.lastPaid > 0, "Renter has not paid yet");
         _;
     }
 
     // --- FUNCTIONS ---
-    function addProperty(string memory _name, string memory _location, uint _rentPrice, uint _deposit) public {
+    function addProperty(
+        string memory _name,
+        string memory _location,
+        uint256 _rentPrice,
+        uint256 _deposit
+    ) public {
         propertyCount++;
         properties[propertyCount] = Property({
             id: propertyCount,
@@ -65,14 +84,20 @@ contract RealEstate {
         });
     }
 
-    function rentProperty(uint _propertyId) 
-        public 
-        payable 
+    function rentProperty(uint256 _propertyId)
+        public
+        payable
         onlyWhenAvailable(_propertyId)
     {
         Property storage prop = properties[_propertyId];
-        require(msg.sender != prop.owner, "Owner cannot rent their own property");
-        require(msg.value >= prop.rentPrice + prop.deposit, "Insufficient rent payment + deposit");
+        require(
+            msg.sender != prop.owner,
+            "Owner cannot rent their own property"
+        );
+        require(
+            msg.value >= prop.rentPrice + prop.deposit,
+            "Insufficient rent payment + deposit"
+        );
 
         prop.renter = msg.sender;
         prop.status = Status.Rented;
@@ -83,10 +108,7 @@ contract RealEstate {
         prop.owner.transfer(prop.deposit);
     }
 
-    function endRental(uint _propertyId) 
-        public 
-        onlyWhenRented(_propertyId)
-    {
+    function endRental(uint256 _propertyId) public onlyWhenRented(_propertyId) {
         Property storage prop = properties[_propertyId];
         require(
             msg.sender == prop.owner || msg.sender == prop.renter,
@@ -103,41 +125,41 @@ contract RealEstate {
         prop.lastPaid = 0;
     }
 
-    function payRent(uint _propertyId) 
-        public 
-        payable 
-        onlyRenter(_propertyId) 
+    function payRent(uint256 _propertyId)
+        public
+        payable
+        onlyRenter(_propertyId)
         onlyWhenRented(_propertyId)
         renterHasPaid(_propertyId)
     {
         Property storage prop = properties[_propertyId];
-        uint currentTime = block.timestamp;
-        uint overdueDays = (currentTime - prop.lastPaid) / 1 days;
+        uint256 currentTime = block.timestamp;
 
-        // Calculate late fee if overdue
-        uint lateFee = 0;
-        if (overdueDays > 0) {
-            lateFee = (prop.rentPrice * lateFeePercentage / 100) * overdueDays;
-        }
-
-        uint totalAmount = prop.rentPrice + lateFee;
-        require(msg.value >= totalAmount, "Insufficient payment including late fee");
+        uint256 totalAmount = prop.rentPrice;
+        require(
+            msg.value >= totalAmount,
+            "Insufficient payment including late fee"
+        );
 
         // Transfer rent and late fee to the owner
         prop.owner.transfer(prop.rentPrice);
-        if (lateFee > 0) {
-            prop.owner.transfer(lateFee);
-        }
 
         prop.lastPaid = currentTime;
     }
 
-    function getProperty(uint _propertyId) 
-        public 
-        view 
+    function getProperty(uint256 _propertyId)
+        public
+        view
         returns (
-            uint, string memory, string memory, address, address, uint, uint, Status
-        ) 
+            uint256,
+            string memory,
+            string memory,
+            address,
+            address,
+            uint256,
+            uint256,
+            Status
+        )
     {
         Property memory prop = properties[_propertyId];
         return (
@@ -153,9 +175,14 @@ contract RealEstate {
     }
 
     // --- OWNER FUNCTIONS ---
-    function updateLateFeePercentage(uint _newPercentage) public {
-        // Only the contract owner can update the late fee percentage
-        lateFeePercentage = _newPercentage;
+
+    /// @notice Chủ sở hữu cập nhật giá thuê
+    function updateRentPrice(uint256 _propertyId, uint256 _newRentPrice)
+        public
+        onlyOwner(_propertyId)
+    {
+        Property storage prop = properties[_propertyId];
+        prop.rentPrice = _newRentPrice;
     }
 
     function withdrawBalance() public {

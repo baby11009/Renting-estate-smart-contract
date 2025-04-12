@@ -21,6 +21,11 @@
 						"internalType": "uint256",
 						"name": "_rentPrice",
 						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_deposit",
+						"type": "uint256"
 					}
 				],
 				"name": "addProperty",
@@ -82,12 +87,30 @@
 						"type": "uint256"
 					},
 					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					},
+					{
 						"internalType": "enum RealEstate.Status",
 						"name": "",
 						"type": "uint8"
 					}
 				],
 				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_propertyId",
+						"type": "uint256"
+					}
+				],
+				"name": "payRent",
+				"outputs": [],
+				"stateMutability": "payable",
 				"type": "function"
 			},
 			{
@@ -131,6 +154,16 @@
 						"type": "uint256"
 					},
 					{
+						"internalType": "uint256",
+						"name": "deposit",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "lastPaid",
+						"type": "uint256"
+					},
+					{
 						"internalType": "enum RealEstate.Status",
 						"name": "status",
 						"type": "uint8"
@@ -164,16 +197,46 @@
 				"outputs": [],
 				"stateMutability": "payable",
 				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_propertyId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_newRentPrice",
+						"type": "uint256"
+					}
+				],
+				"name": "updateRentPrice",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "withdrawBalance",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
 			}
 		],
 		"devdoc": {
 			"kind": "dev",
 			"methods": {},
+			"title": "Real Estate Smart Contract - Track Property Details and Renting with Deposits and Late Fees",
 			"version": 1
 		},
 		"userdoc": {
 			"kind": "user",
-			"methods": {},
+			"methods": {
+				"updateRentPrice(uint256,uint256)": {
+					"notice": "Chủ sở hữu cập nhật giá thuê"
+				}
+			},
 			"version": 1
 		}
 	},
@@ -194,11 +257,11 @@
 	},
 	"sources": {
 		"contracts/RealEstate.sol": {
-			"keccak256": "0xcb17138d0dcbc628182467bd37ac3a817bd0356152fd2983a59fd7c281b9bacb",
+			"keccak256": "0xb258359f493097aa1fa2c502000264f8cd55e3aeca50d155f76d26943cd8eebf",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://e1923f99b70c65b007752d8c366bf36f9a00942505762a09e46f06312bcf6f4a",
-				"dweb:/ipfs/QmV9M3vJkk6Kg45ufnwwHq96cTEuyDBUA7p68bKhk61bAY"
+				"bzz-raw://b767fd007f1276001c82109c4cb66d88d8d114e20f5739da6663d7ebdf249a40",
+				"dweb:/ipfs/QmVi4fuQyVauXMhoZiKMjt7WfZSNUVunsQRdkyu3Xcu2xG"
 			]
 		}
 	},
