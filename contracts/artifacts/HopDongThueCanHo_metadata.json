@@ -25,18 +25,19 @@
 				"inputs": [],
 				"name": "chamDutHopDong",
 				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "chapNhanYeuCauGiaHan",
+				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "soThangThem",
-						"type": "uint256"
-					}
-				],
-				"name": "giaHanHopDong",
+				"inputs": [],
+				"name": "huyYeuCauGiaHan",
 				"outputs": [],
 				"stateMutability": "payable",
 				"type": "function"
@@ -52,32 +53,26 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
+						"name": "soTienCanRut",
+						"type": "uint256"
+					}
+				],
+				"name": "rutSoDu",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
 						"name": "soThangMuonRut",
 						"type": "uint256"
 					}
 				],
 				"name": "rutTien",
 				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"name": "soDuTaiKhoan",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
+				"stateMutability": "payable",
 				"type": "function"
 			},
 			{
@@ -103,6 +98,25 @@
 						"internalType": "bool",
 						"name": "hopDongDuocKy",
 						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "taiKhoan",
+						"type": "address"
+					}
+				],
+				"name": "xemSoDu",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -135,6 +149,37 @@
 				],
 				"stateMutability": "view",
 				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "xemYeuCauGiaHanHopDong",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "soThangThem",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "soTienDaChuyen",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "soThangThem",
+						"type": "uint256"
+					}
+				],
+				"name": "yeuCauGiaHan",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -165,11 +210,11 @@
 	},
 	"sources": {
 		"contracts/RealEstate.sol": {
-			"keccak256": "0x8f8005b09be36f6d1574136a701614c74b87946dc2cd4015c54f23ee384c9d6e",
+			"keccak256": "0xd6419cece01d484336ebd170406e83c6b3a00b0d8a503bb4a12ccbccfd770f6d",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://4d9a4d569fbf0441fe66446d5b86e71dfa639ed673e92b97b9706cf60f4d4632",
-				"dweb:/ipfs/QmZPTC5tj4VRw5idetdF81JDk7myheckb48CW1QxpqpxGV"
+				"bzz-raw://a72c3cd0a6a99f26395750cef86488f189e5d7fae88e62ccb9dfc13cb3188c20",
+				"dweb:/ipfs/QmaSqqoXtYV3u1ph5hyBsRenxr4esKbwxaptXa9fNwwdqA"
 			]
 		}
 	},
