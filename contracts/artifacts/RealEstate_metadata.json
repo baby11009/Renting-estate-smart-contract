@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.26+commit.8a97fa7a"
+		"version": "0.8.30+commit.73712a01"
 	},
 	"language": "Solidity",
 	"output": {
@@ -244,7 +244,7 @@
 		"compilationTarget": {
 			"contracts/RealEstate.sol": "RealEstate"
 		},
-		"evmVersion": "cancun",
+		"evmVersion": "prague",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -257,11 +257,11 @@
 	},
 	"sources": {
 		"contracts/RealEstate.sol": {
-			"keccak256": "0xb258359f493097aa1fa2c502000264f8cd55e3aeca50d155f76d26943cd8eebf",
+			"keccak256": "0xd62a234d3e1eb65816f371b999fd4258f5585d81f2b787164f5018c37058a3c9",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://b767fd007f1276001c82109c4cb66d88d8d114e20f5739da6663d7ebdf249a40",
-				"dweb:/ipfs/QmVi4fuQyVauXMhoZiKMjt7WfZSNUVunsQRdkyu3Xcu2xG"
+				"bzz-raw://48931d6364fab11d999661c99ec1280dd1c82bde5b8572399e32e8e4d00bee56",
+				"dweb:/ipfs/QmfRpV6eZ8ihcUG3nkxTrCj3wtrehCJn4NNpaD6py4mv9D"
 			]
 		}
 	},

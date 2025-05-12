@@ -1,193 +1,209 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.0;
 
-/// @title Real Estate Smart Contract - Track Property Details and Renting with Deposits and Late Fees
-contract RealEstate {
-    uint256 public propertyCount = 0;
-
-    enum Status {
-        Available,
-        Rented
+contract HopDongThueCanHo {
+    struct ThongTinNha {
+        address chuNha;
+        uint256 chiPhiHangThang;
+        uint256 thoiGianThueThang;
+        bool hopDongDuocKy;
     }
 
-    struct Property {
-        uint256 id;
-        string name;
-        string location;
-        address payable owner;
-        address renter;
-        uint256 rentPrice;
-        uint256 deposit;
-        uint256 lastPaid;
-        Status status;
+    struct ThongTinThue {
+        address nguoiThue;
+        uint256 thoiDiemBatDau;
+        uint256 soThangDaThanhToan;
+        uint256 thoiDiemKetThuc;
     }
 
-    mapping(uint256 => Property) public properties;
+    ThongTinNha public thongTinNha;
+    ThongTinThue private thongTinThue;
+    mapping(address => uint256) public soDuTaiKhoan;
 
-    // --- MODIFIERS ---
-    modifier onlyOwner(uint256 _propertyId) {
-        require(
-            msg.sender == properties[_propertyId].owner,
-            "Not property owner"
-        );
-        _;
+    constructor(uint256 _chiPhiHangThang, uint256 _thoiGianThueThang) {
+        require(_chiPhiHangThang > 0, "Chi phi hang thang phai > 0");
+        require(_thoiGianThueThang > 0, "Thoi gian thue phai > 0");
+
+        thongTinNha.chuNha = msg.sender;
+        thongTinNha.chiPhiHangThang = _chiPhiHangThang;
+        thongTinNha.thoiGianThueThang = _thoiGianThueThang;
+        thongTinNha.hopDongDuocKy = false;
     }
 
-    modifier onlyRenter(uint256 _propertyId) {
-        require(
-            msg.sender == properties[_propertyId].renter,
-            "Not renter of this property"
-        );
-        _;
-    }
-
-    modifier onlyWhenRented(uint256 _propertyId) {
-        require(
-            properties[_propertyId].status == Status.Rented,
-            "Property is not rented"
-        );
-        _;
-    }
-
-    modifier onlyWhenAvailable(uint256 _propertyId) {
-        require(
-            properties[_propertyId].status == Status.Available,
-            "Property is not available"
-        );
-        _;
-    }
-
-    modifier renterHasPaid(uint256 _propertyId) {
-        Property storage prop = properties[_propertyId];
-        require(prop.lastPaid > 0, "Renter has not paid yet");
-        _;
-    }
-
-    // --- FUNCTIONS ---
-    function addProperty(
-        string memory _name,
-        string memory _location,
-        uint256 _rentPrice,
-        uint256 _deposit
-    ) public {
-        propertyCount++;
-        properties[propertyCount] = Property({
-            id: propertyCount,
-            name: _name,
-            location: _location,
-            owner: payable(msg.sender),
-            renter: address(0),
-            rentPrice: _rentPrice,
-            deposit: _deposit,
-            lastPaid: 0,
-            status: Status.Available
-        });
-    }
-
-    function rentProperty(uint256 _propertyId)
-        public
-        payable
-        onlyWhenAvailable(_propertyId)
-    {
-        Property storage prop = properties[_propertyId];
-        require(
-            msg.sender != prop.owner,
-            "Owner cannot rent their own property"
-        );
-        require(
-            msg.value >= prop.rentPrice + prop.deposit,
-            "Insufficient rent payment + deposit"
-        );
-
-        prop.renter = msg.sender;
-        prop.status = Status.Rented;
-        prop.lastPaid = block.timestamp;
-
-        // Transfer rent and deposit to owner
-        prop.owner.transfer(prop.rentPrice);
-        prop.owner.transfer(prop.deposit);
-    }
-
-    function endRental(uint256 _propertyId) public onlyWhenRented(_propertyId) {
-        Property storage prop = properties[_propertyId];
-        require(
-            msg.sender == prop.owner || msg.sender == prop.renter,
-            "Only owner or renter can end rental"
-        );
-
-        if (msg.sender == prop.owner) {
-            // If owner ends rental, return deposit to renter
-            payable(prop.renter).transfer(prop.deposit);
-        }
-
-        prop.renter = address(0);
-        prop.status = Status.Available;
-        prop.lastPaid = 0;
-    }
-
-    function payRent(uint256 _propertyId)
-        public
-        payable
-        onlyRenter(_propertyId)
-        onlyWhenRented(_propertyId)
-        renterHasPaid(_propertyId)
-    {
-        Property storage prop = properties[_propertyId];
-        uint256 currentTime = block.timestamp;
-
-        uint256 totalAmount = prop.rentPrice;
-        require(
-            msg.value >= totalAmount,
-            "Insufficient payment including late fee"
-        );
-
-        // Transfer rent and late fee to the owner
-        prop.owner.transfer(prop.rentPrice);
-
-        prop.lastPaid = currentTime;
-    }
-
-    function getProperty(uint256 _propertyId)
-        public
+    function xemTinhTrangThue()
+        external
         view
         returns (
-            uint256,
-            string memory,
-            string memory,
-            address,
-            address,
-            uint256,
-            uint256,
-            Status
+            address nguoiThue,
+            uint256 thoiDiemBatDau,
+            uint256 soThangDaThanhToan,
+            uint256 thoiGianConLai
         )
     {
-        Property memory prop = properties[_propertyId];
+        if (
+            thongTinThue.nguoiThue == address(0) ||
+            (msg.sender != thongTinNha.chuNha &&
+                msg.sender != thongTinThue.nguoiThue)
+        ) {
+            return (
+                address(0),
+                thongTinThue.thoiDiemBatDau,
+                thongTinThue.soThangDaThanhToan,
+                0
+            );
+        }
+
+        uint256 thoiGianConLaiTinh = 0;
+        if (block.timestamp < thongTinThue.thoiDiemKetThuc) {
+            thoiGianConLaiTinh =
+                (thongTinThue.thoiDiemKetThuc - block.timestamp) /
+                10 seconds;
+        }
+
         return (
-            prop.id,
-            prop.name,
-            prop.location,
-            prop.owner,
-            prop.renter,
-            prop.rentPrice,
-            prop.deposit,
-            prop.status
+            thongTinThue.nguoiThue,
+            thongTinThue.thoiDiemBatDau,
+            thongTinThue.soThangDaThanhToan,
+            thoiGianConLaiTinh
         );
     }
 
-    // --- OWNER FUNCTIONS ---
+    function kyHopDong() external payable {
+        require(!thongTinNha.hopDongDuocKy, "Hop dong da duoc ky");
+        require(msg.sender != thongTinNha.chuNha, "Chu nha khong the tu ky");
+        require(
+            msg.value >=
+                thongTinNha.chiPhiHangThang * thongTinNha.thoiGianThueThang,
+            "Phai nap du tien cho toan bo ky han"
+        );
 
-    /// @notice Chủ sở hữu cập nhật giá thuê
-    function updateRentPrice(uint256 _propertyId, uint256 _newRentPrice)
-        public
-        onlyOwner(_propertyId)
-    {
-        Property storage prop = properties[_propertyId];
-        prop.rentPrice = _newRentPrice;
+        thongTinThue.nguoiThue = msg.sender;
+        thongTinThue.thoiDiemBatDau = block.timestamp;
+        thongTinThue.soThangDaThanhToan = 0;
+        thongTinThue.thoiDiemKetThuc =
+            block.timestamp +
+            thongTinNha.thoiGianThueThang *
+            10 seconds;
+
+        soDuTaiKhoan[thongTinThue.nguoiThue] = msg.value;
+        thongTinNha.hopDongDuocKy = true;
     }
 
-    function withdrawBalance() public {
-        // Only the contract owner can withdraw the balance
-        require(msg.sender == properties[1].owner, "Only owner can withdraw");
-        payable(msg.sender).transfer(address(this).balance);
+    function rutTien(uint256 soThangMuonRut) external {
+        require(
+            msg.sender == thongTinNha.chuNha,
+            "Chi chu nha moi duoc rut tien"
+        );
+        require(thongTinNha.hopDongDuocKy, "Chua co hop dong hop le");
+        require(
+            thongTinThue.soThangDaThanhToan < thongTinNha.thoiGianThueThang,
+            "Nguoi thue da thanh toan day du"
+        );
+
+        uint256 soThangDaThue = (block.timestamp -
+            thongTinThue.thoiDiemBatDau) / 10 seconds;
+
+        uint256 soThangChoRut = soThangDaThue;
+
+        require(
+            soThangChoRut >= soThangMuonRut,
+            "Chua co thang nao moi de rut"
+        );
+
+        require(
+            thongTinNha.thoiGianThueThang - thongTinThue.soThangDaThanhToan >=
+                soThangMuonRut,
+            "So thang muon rut lon hon so thoi gian con lai"
+        );
+
+        uint256 soTienRut = soThangMuonRut * thongTinNha.chiPhiHangThang;
+        require(
+            soDuTaiKhoan[thongTinThue.nguoiThue] >= soTienRut,
+            "So du khong du"
+        );
+
+        soDuTaiKhoan[thongTinThue.nguoiThue] -= soTienRut;
+        soDuTaiKhoan[thongTinNha.chuNha] += soTienRut;
+        thongTinThue.soThangDaThanhToan += soThangMuonRut;
+
+        payable(thongTinNha.chuNha).transfer(soTienRut);
+    }
+
+    function giaHanHopDong(uint256 soThangThem) external payable {
+        require(thongTinNha.hopDongDuocKy, "Chua co hop dong");
+        require(
+            msg.sender == thongTinThue.nguoiThue,
+            "Chi nguoi thue moi duoc gia han"
+        );
+        // Giới hạn thời gian gia hạn: chỉ được phép gia hạn trong vòng 5s sau khi hết hạn
+        require(
+            block.timestamp <= thongTinThue.thoiDiemKetThuc + 5 seconds,
+            "Da qua thoi gian cho phep gia han"
+        );
+
+        require(soThangThem > 0, "Phai them it nhat 1 thang");
+
+        require(
+            soDuTaiKhoan[msg.sender] + msg.value >=
+                (soThangThem +
+                    thongTinNha.thoiGianThueThang -
+                    thongTinThue.soThangDaThanhToan) *
+                    thongTinNha.chiPhiHangThang,
+            "So du con lai khong du de gia han"
+        );
+
+        // Gia hạn thời gian kết thúc hợp đồng
+        thongTinThue.thoiDiemKetThuc += soThangThem * 10 seconds;
+
+        // Cập nhật tổng số tháng trong hợp đồng
+        thongTinNha.thoiGianThueThang += soThangThem;
+
+        // Cập nhật số dư tài khoản
+        soDuTaiKhoan[msg.sender] += msg.value;
+    }
+
+    function chamDutHopDong() external {
+        require(thongTinNha.hopDongDuocKy, "Chua co hop dong");
+        require(
+            msg.sender == thongTinThue.nguoiThue ||
+                msg.sender == thongTinNha.chuNha,
+            "Chi chu nha hoac nguoi thue moi co quyen"
+        );
+
+        uint256 tongThangThue = thongTinNha.thoiGianThueThang;
+        uint256 soThangDaSuDung = (block.timestamp -
+            thongTinThue.thoiDiemBatDau) / 10 seconds;
+
+        if (soThangDaSuDung > tongThangThue) {
+            soThangDaSuDung = tongThangThue;
+        }
+
+        uint256 soTienChuaThanhToan = (soThangDaSuDung -
+            thongTinThue.soThangDaThanhToan) * thongTinNha.chiPhiHangThang;
+
+        uint256 tienHoanLai = soDuTaiKhoan[thongTinThue.nguoiThue] -
+            soTienChuaThanhToan;
+
+        // Nếu có tiền hoàn lại, thực hiện chuyển tiền
+        if (tienHoanLai > 0) {
+            (bool success, ) = payable(msg.sender).call{value: tienHoanLai}("");
+            require(success, "Chuyen tien that bai");
+        }
+
+        // CHuyển số tiền chưa thanh toán cho chủ nhà
+        if (soTienChuaThanhToan > 0) {
+            soDuTaiKhoan[thongTinNha.chuNha] += soTienChuaThanhToan;
+        }
+
+        soDuTaiKhoan[thongTinThue.nguoiThue] = 0;
+
+        // Chấm dứt hợp đồng
+        thongTinNha.hopDongDuocKy = false;
+
+        // Reset thông tin người thuê
+        thongTinThue.nguoiThue = address(0);
+        thongTinThue.thoiDiemBatDau = 0;
+        thongTinThue.soThangDaThanhToan = 0;
+        thongTinThue.thoiDiemKetThuc = 0;
     }
 }

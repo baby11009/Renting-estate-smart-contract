@@ -1,0 +1,177 @@
+{
+	"compiler": {
+		"version": "0.8.30+commit.73712a01"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_chiPhiHangThang",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_thoiGianThueThang",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"inputs": [],
+				"name": "chamDutHopDong",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "soThangThem",
+						"type": "uint256"
+					}
+				],
+				"name": "giaHanHopDong",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "kyHopDong",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "soThangMuonRut",
+						"type": "uint256"
+					}
+				],
+				"name": "rutTien",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "soDuTaiKhoan",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "thongTinNha",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "chuNha",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "chiPhiHangThang",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "thoiGianThueThang",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "hopDongDuocKy",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "xemTinhTrangThue",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "nguoiThue",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "thoiDiemBatDau",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "soThangDaThanhToan",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "thoiGianConLai",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/RealEstate.sol": "HopDongThueCanHo"
+		},
+		"evmVersion": "prague",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/RealEstate.sol": {
+			"keccak256": "0x8f8005b09be36f6d1574136a701614c74b87946dc2cd4015c54f23ee384c9d6e",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://4d9a4d569fbf0441fe66446d5b86e71dfa639ed673e92b97b9706cf60f4d4632",
+				"dweb:/ipfs/QmZPTC5tj4VRw5idetdF81JDk7myheckb48CW1QxpqpxGV"
+			]
+		}
+	},
+	"version": 1
+}
